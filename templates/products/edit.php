@@ -133,7 +133,7 @@ $showNavbar = true;
                             </label>
                             <label class="flex items-center">
                                 <input type="checkbox" name="customization_groups[<?= $groupIndex ?>][allow_multiple]" 
-                                       <?= $group['allow_multiple'] ? 'checked' : '' ?>
+                                       <?= (isset($group['max_selections']) && $group['max_selections'] > 1) ? 'checked' : '' ?>
                                        class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                                 <span class="ml-2 text-sm text-gray-700">Permitir múltiplas seleções</span>
                             </label>
@@ -155,7 +155,7 @@ $showNavbar = true;
                                             <div>
                                                 <label class="form-label">Preço Adicional (R$)</label>
                                                 <input type="number" name="customization_groups[<?= $groupIndex ?>][options][<?= $optionIndex ?>][price]" 
-                                                       value="<?= $option['price'] ?>"
+                                                       value="<?= $option['price_adjustment'] ?? 0 ?>"
                                                        class="form-input" step="0.01" min="0">
                                             </div>
                                             <div>
@@ -171,7 +171,7 @@ $showNavbar = true;
                                             </div>
                                         </div>
                                         
-                                        <?php if ($option['image']): ?>
+                                        <?php if (isset($option['image']) && $option['image']): ?>
                                         <div class="mt-3">
                                             <img src="/<?= htmlspecialchars($option['image']) ?>" 
                                                  alt="Imagem da opção" class="w-16 h-16 object-cover rounded">

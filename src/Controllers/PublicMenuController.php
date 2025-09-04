@@ -358,7 +358,7 @@ class PublicMenuController extends BaseController
             foreach ($optionGroups as &$group) {
                 $stmt = $this->db->getPdo()->prepare("
                     SELECT * FROM product_options 
-                    WHERE option_group_id = ? AND is_available = 1
+                    WHERE group_id = ? AND is_available = 1
                     ORDER BY sort_order, name
                 ");
                 $stmt->execute([$group['id']]);

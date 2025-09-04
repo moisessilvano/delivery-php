@@ -530,7 +530,7 @@
                     optionDiv.className = 'flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors';
                     
                     const input = document.createElement('input');
-                    input.type = group.allow_multiple ? 'checkbox' : 'radio';
+                    input.type = (group.max_selections > 1) ? 'checkbox' : 'radio';
                     input.name = `group_${group.id}`;
                     input.value = option.id;
                     input.dataset.price = option.price;
@@ -543,13 +543,13 @@
                     // Visual radio/checkbox indicator
                     const indicator = document.createElement('div');
                     indicator.className = 'w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center transition-colors';
-                    if (group.allow_multiple) {
+                    if (group.max_selections > 1) {
                         indicator.className = 'w-5 h-5 border-2 border-gray-300 rounded flex items-center justify-center transition-colors';
                     }
                     
                     const indicatorInner = document.createElement('div');
                     indicatorInner.className = 'w-2 h-2 bg-primary-600 rounded-full hidden';
-                    if (group.allow_multiple) {
+                    if (group.max_selections > 1) {
                         indicatorInner.className = 'w-2 h-2 bg-primary-600 rounded hidden';
                     }
                     indicator.appendChild(indicatorInner);

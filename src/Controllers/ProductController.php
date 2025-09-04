@@ -115,7 +115,7 @@ class ProductController extends BaseController
         foreach ($optionGroups as &$group) {
             $stmt = $this->db->getPdo()->prepare("
                 SELECT * FROM product_options 
-                WHERE option_group_id = ? AND is_available = 1
+                WHERE group_id = ? AND is_available = 1
                 ORDER BY sort_order, name
             ");
             $stmt->execute([$group['id']]);
@@ -254,14 +254,15 @@ class ProductController extends BaseController
                 if (!empty($groupData['name'])) {
                     // Insert group
                     $stmt = $this->db->getPdo()->prepare("
-                        INSERT INTO product_option_groups (product_id, name, is_required, allow_multiple, sort_order) 
-                        VALUES (?, ?, ?, ?, ?)
+                        INSERT INTO product_option_groups (product_id, name, is_required, min_selections, max_selections, sort_order) 
+                        VALUES (?, ?, ?, ?, ?, ?)
                     ");
                     $stmt->execute([
                         $productId,
                         $groupData['name'],
                         isset($groupData['is_required']) ? 1 : 0,
-                        isset($groupData['allow_multiple']) ? 1 : 0,
+                        isset($groupData['allow_multiple']) ? 1 : 1, // min_selections
+                        isset($groupData['allow_multiple']) ? 999 : 1, // max_selections
                         (int)($groupData['sort_order'] ?? 0)
                     ]);
                     $groupId = $this->db->getPdo()->lastInsertId();
@@ -287,14 +288,13 @@ class ProductController extends BaseController
                                 }
 
                                 $stmt = $this->db->getPdo()->prepare("
-                                    INSERT INTO product_options (option_group_id, name, price, image, sort_order) 
-                                    VALUES (?, ?, ?, ?, ?)
+                                    INSERT INTO product_options (group_id, name, price_adjustment, sort_order) 
+                                    VALUES (?, ?, ?, ?)
                                 ");
                                 $stmt->execute([
                                     $groupId,
                                     $option['name'],
                                     (float)($option['price'] ?? 0),
-                                    $optionImage,
                                     (int)($option['sort_order'] ?? $optionIndex)
                                 ]);
                             }
