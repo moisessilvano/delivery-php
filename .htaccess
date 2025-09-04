@@ -11,6 +11,19 @@ Header always set X-XSS-Protection "1; mode=block"
 Header always set X-Content-Type-Options "nosniff"
 Header always set Referrer-Policy "no-referrer-when-downgrade"
 
+# Serve static files directly from public directory (HIGHEST PRIORITY)
+RewriteCond %{REQUEST_URI} ^/css/
+RewriteRule ^css/(.*)$ public/css/$1 [L]
+
+RewriteCond %{REQUEST_URI} ^/js/
+RewriteRule ^js/(.*)$ public/js/$1 [L]
+
+RewriteCond %{REQUEST_URI} ^/audio/
+RewriteRule ^audio/(.*)$ public/audio/$1 [L]
+
+RewriteCond %{REQUEST_URI} ^/icons/
+RewriteRule ^icons/(.*)$ public/icons/$1 [L]
+
 # Handle specific subdomains only (teste, demo, cardapio)
 RewriteCond %{HTTP_HOST} ^(teste|demo|cardapio)\.appzei\.com$
 RewriteRule ^(.*)$ index.php?subdomain=%1&path=%{REQUEST_URI} [QSA,L]
@@ -23,13 +36,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]
 RewriteCond %{HTTP_HOST} ^appzei\.com$
 RewriteRule ^(.*)$ index.php [QSA,L]
 
-# Serve static files directly from public directory
-RewriteRule ^css/(.*)$ public/css/$1 [L]
-RewriteRule ^js/(.*)$ public/js/$1 [L]
-RewriteRule ^audio/(.*)$ public/audio/$1 [L]
-RewriteRule ^icons/(.*)$ public/icons/$1 [L]
-
-# Redirect all requests to index.php
+# Redirect all other requests to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]

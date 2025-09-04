@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'Comida SM' ?></title>
     <link href="/css/output.css" rel="stylesheet">
+    <!-- Debug: CSS path -->
+    <style>
+        /* Fallback styles while CSS loads */
+        body { font-family: Arial, sans-serif; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .text-primary-600 { color: #2563eb; }
+    </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
