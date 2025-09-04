@@ -158,8 +158,8 @@ class OrderController extends BaseController
                 $totalAmount += (float)$item['price'] * (int)$item['quantity'];
             }
 
-            // Generate public ID
-            $publicId = bin2hex(random_bytes(16));
+            // Generate daily order number
+            $publicId = $this->generateDailyOrderNumber($establishmentId);
 
             // Create order
             $stmt = $this->db->getPdo()->prepare("
@@ -492,6 +492,74 @@ class OrderController extends BaseController
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);
         }
+    }
+
+    private function generateDailyOrderNumber(int $establishmentId): string
+    {
+        $today = date('Y-m-d');
+        $maxRetries = 5;
+        $retryCount = 0;
+        
+        while ($retryCount < $maxRetries) {
+            try {
+                $this->db->getPdo()->beginTransaction();
+                
+                // Get the last order number for today with FOR UPDATE to prevent race conditions
+                $stmt = $this->db->getPdo()->prepare("
+                    SELECT public_id FROM orders 
+                    WHERE establishment_id = ? AND DATE(created_at) = ? 
+                    ORDER BY id DESC LIMIT 1
+                    FOR UPDATE
+                ");
+                $stmt->execute([$establishmentId, $today]);
+                $lastOrder = $stmt->fetch();
+                
+                if ($lastOrder && is_numeric($lastOrder['public_id'])) {
+                    $nextNumber = (int)$lastOrder['public_id'] + 1;
+                } else {
+                    $nextNumber = 1;
+                }
+                
+                // Test if this number is already taken (double-check)
+                $stmt = $this->db->getPdo()->prepare("
+                    SELECT id FROM orders 
+                    WHERE establishment_id = ? AND public_id = ? AND DATE(created_at) = ?
+                ");
+                $stmt->execute([$establishmentId, (string)$nextNumber, $today]);
+                $existingOrder = $stmt->fetch();
+                
+                if ($existingOrder) {
+                    // Number already exists, increment and try again
+                    $nextNumber++;
+                    $stmt = $this->db->getPdo()->prepare("
+                        SELECT id FROM orders 
+                        WHERE establishment_id = ? AND public_id = ? AND DATE(created_at) = ?
+                    ");
+                    $stmt->execute([$establishmentId, (string)$nextNumber, $today]);
+                    $existingOrder = $stmt->fetch();
+                    
+                    if ($existingOrder) {
+                        // Still exists, abort transaction and retry
+                        $this->db->getPdo()->rollBack();
+                        $retryCount++;
+                        usleep(100000); // Wait 100ms before retry
+                        continue;
+                    }
+                }
+                
+                $this->db->getPdo()->commit();
+                return (string)$nextNumber;
+                
+            } catch (\Exception $e) {
+                $this->db->getPdo()->rollBack();
+                $retryCount++;
+                usleep(100000); // Wait 100ms before retry
+                error_log("Error generating order number (attempt {$retryCount}): " . $e->getMessage());
+            }
+        }
+        
+        // If all retries failed, fall back to timestamp-based ID
+        return (string)(time() . rand(100, 999));
     }
 }
 
