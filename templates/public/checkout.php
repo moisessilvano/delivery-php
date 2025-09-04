@@ -183,12 +183,12 @@
                         <h4 class="font-medium">${item.name}</h4>
                         <p class="text-sm text-gray-600">${item.quantity}x R$ ${item.price.toFixed(2).replace('.', ',')}</p>
                     </div>
-                    <span class="font-medium">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+                    <span class="font-medium">R$ ${(parseFloat(item.price || 0) * item.quantity).toFixed(2).replace('.', ',')}</span>
                 </div>
             `).join('');
             
             // Calculate totals
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const subtotal = cart.reduce((sum, item) => sum + (parseFloat(item.price || 0) * item.quantity), 0);
             const deliveryType = document.querySelector('input[name="delivery_type"]:checked')?.value || 'delivery';
             const deliveryFee = deliveryType === 'pickup' ? 0 : <?= $establishment['delivery_fee'] ?>;
             const total = subtotal + deliveryFee;
@@ -233,7 +233,7 @@
             }
             
             // Check minimum order value
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const subtotal = cart.reduce((sum, item) => sum + (parseFloat(item.price || 0) * item.quantity), 0);
             const minOrderValue = <?= $establishment['min_order_value'] ?>;
             if (subtotal < minOrderValue) {
                 alert(`O valor mínimo do pedido é R$ ${minOrderValue.toFixed(2).replace('.', ',')}. Seu pedido atual é de R$ ${subtotal.toFixed(2).replace('.', ',')}.`);

@@ -320,7 +320,7 @@
             }
             
             // Update total
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = cart.reduce((sum, item) => sum + (parseFloat(item.price || 0) * item.quantity), 0);
             cartTotal.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
         }
         

@@ -675,9 +675,9 @@
             });
             
             // Calculate item total price
-            let itemPrice = currentProduct.price;
+            let itemPrice = parseFloat(currentProduct.price || 0);
             selectedOptions.forEach(option => {
-                itemPrice += option.price;
+                itemPrice += parseFloat(option.price || 0);
             });
             
             // Create cart item
@@ -693,6 +693,12 @@
             
             // Add to cart
             cart.push(cartItem);
+            
+            // Debug log
+            console.log('Added to cart:', cartItem);
+            console.log('Cart total items:', cart.length);
+            console.log('Cart items:', cart);
+            
             updateUI();
             
             // Close modal and show success message
@@ -730,7 +736,11 @@
         // Update UI
         function updateUI() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (parseFloat(item.price || 0) * item.quantity), 0);
+            
+            // Debug log
+            console.log('updateUI - Cart items:', cart);
+            console.log('updateUI - Total price calculated:', totalPrice);
             
             // Update cart counter
             const cartCount = document.getElementById('cart-count');
@@ -822,7 +832,7 @@
             cartItems.innerHTML = '';
             
             cart.forEach(item => {
-                const total = item.price * item.quantity;
+                const total = parseFloat(item.price || 0) * item.quantity;
                 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'flex items-start justify-between py-2';

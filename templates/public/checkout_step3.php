@@ -208,7 +208,7 @@
             if (cartItems.length > 0) {
                 // Use cart items with customizations
                 cartItems.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
+                    const itemTotal = parseFloat(item.price || 0) * item.quantity;
                     subtotal += itemTotal;
 
                     const itemDiv = document.createElement('div');
@@ -305,7 +305,7 @@
             if (cartItems.length > 0) {
                 // Calculate using cart items with customizations
                 cartItems.forEach(item => {
-                    subtotal += (item.price || 0) * (item.quantity || 1);
+                    subtotal += parseFloat(item.price || 0) * (item.quantity || 1);
                 });
             } else {
                 // Fallback to basic cart calculation
