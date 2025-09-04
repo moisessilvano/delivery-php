@@ -56,7 +56,14 @@ $path = $_GET['path'] ?? '/';
 // Detect subdomain from HTTP_HOST for local testing
 if (!$subdomain && isset($_SERVER['HTTP_HOST'])) {
     $host = $_SERVER['HTTP_HOST'];
+    // Only detect subdomains for localhost or specific patterns
     if (preg_match('/^([^.]+)\.localhost(:[0-9]+)?$/', $host, $matches)) {
+        $subdomain = $matches[1];
+        $path = $_SERVER['REQUEST_URI'] ?? '/';
+    }
+    // For production, only detect subdomains that are not the main domain
+    elseif (preg_match('/^([^.]+)\.([^.]+)\.([^.]+)$/', $host, $matches)) {
+        // This is a subdomain (e.g., teste.appzei.com)
         $subdomain = $matches[1];
         $path = $_SERVER['REQUEST_URI'] ?? '/';
     }
