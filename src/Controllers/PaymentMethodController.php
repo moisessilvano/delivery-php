@@ -207,7 +207,8 @@ class PaymentMethodController extends BaseController
             WHERE id = ? AND establishment_id = ?
         ");
         $stmt->execute([$paymentMethodId, $establishmentId]);
-        return $stmt->fetch();
+        $result = $stmt->fetch();
+        return $result === false ? null : $result;
     }
 
     private function getPaymentTypes(): array

@@ -323,7 +323,8 @@ class ProductController extends BaseController
             WHERE id = ? AND establishment_id = ?
         ");
         $stmt->execute([$productId, $establishmentId]);
-        return $stmt->fetch() ?: null;
+        $result = $stmt->fetch();
+        return $result === false ? null : $result;
     }
 }
 

@@ -110,7 +110,7 @@ abstract class BaseController
         $result = $stmt->fetch();
         
         error_log("getCurrentEstablishment - Result: " . print_r($result, true));
-        return $result ?: null;
+        return $result === false ? null : $result;
     }
 
     protected function uploadFile(array $file, string $folder): ?string
@@ -171,7 +171,7 @@ abstract class BaseController
         $result = $stmt->fetch();
         
         error_log("getCurrentUser - Result: " . print_r($result, true));
-        return $result;
+        return $result === false ? null : $result;
     }
 
     protected function isAdmin(): bool
@@ -230,6 +230,8 @@ abstract class BaseController
         $result = $stmt->fetch();
         
         error_log("getEstablishmentBySubdomain - Result: " . print_r($result, true));
-        return $result;
+        
+        // PDO fetch() returns false when no records found, but we need to return null for ?array type
+        return $result === false ? null : $result;
     }
 }

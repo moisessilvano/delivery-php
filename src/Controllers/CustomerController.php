@@ -173,6 +173,7 @@ class CustomerController extends BaseController
             WHERE id = ? AND establishment_id = ?
         ");
         $stmt->execute([$customerId, $establishmentId]);
-        return $stmt->fetch();
+        $result = $stmt->fetch();
+        return $result === false ? null : $result;
     }
 }
