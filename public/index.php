@@ -9,17 +9,32 @@ define('APP_ROOT', dirname(__DIR__));
 define('PUBLIC_ROOT', __DIR__);
 define('STORAGE_ROOT', APP_ROOT . '/storage');
 
-// Load autoloader (works with or without Composer)
-if (file_exists(APP_ROOT . '/vendor/autoload.php')) {
-    // Use Composer autoloader if available
-    require_once APP_ROOT . '/vendor/autoload.php';
-} else {
-    // Use simple autoloader for production
-    require_once APP_ROOT . '/autoload.php';
-}
+// Load classes manually (compatible with both local and production)
+require_once APP_ROOT . '/src/Core/Config.php';
+require_once APP_ROOT . '/src/Core/Database.php';
+require_once APP_ROOT . '/src/Core/Router.php';
+
+// Load base controller
+require_once APP_ROOT . '/src/Controllers/BaseController.php';
+
+// Load all controllers
+require_once APP_ROOT . '/src/Controllers/AuthController.php';
+require_once APP_ROOT . '/src/Controllers/CategoryController.php';
+require_once APP_ROOT . '/src/Controllers/CustomerController.php';
+require_once APP_ROOT . '/src/Controllers/DashboardController.php';
+require_once APP_ROOT . '/src/Controllers/EstablishmentController.php';
+require_once APP_ROOT . '/src/Controllers/FileController.php';
+require_once APP_ROOT . '/src/Controllers/OrderController.php';
+require_once APP_ROOT . '/src/Controllers/PaymentMethodController.php';
+require_once APP_ROOT . '/src/Controllers/ProductController.php';
+require_once APP_ROOT . '/src/Controllers/PublicMenuController.php';
+
+// Load services
+require_once APP_ROOT . '/src/Services/GeocodingService.php';
+require_once APP_ROOT . '/src/Services/PushNotificationService.php';
 
 // Error reporting based on environment
-$config = new Config();
+$config = new App\Core\Config();
 if ($config->get('app.debug')) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
@@ -29,10 +44,10 @@ if ($config->get('app.debug')) {
 }
 
 // Initialize database
-$database = new Database($config->get('database'));
+$database = new App\Core\Database($config->get('database'));
 
 // Initialize router
-$router = new Router();
+$router = new App\Core\Router();
 
 // Handle subdomain routing
 $subdomain = $_GET['subdomain'] ?? null;
