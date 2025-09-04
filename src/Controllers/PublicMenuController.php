@@ -990,8 +990,8 @@ class PublicMenuController extends BaseController
 
         // Pagination
         $page = max(1, (int)($_GET['page'] ?? 1));
-        $limit = 10;
-        $offset = ($page - 1) * $limit;
+        $limit = (int)10;
+        $offset = (int)(($page - 1) * $limit);
 
         // Get total count
         $stmt = $this->db->getPdo()->prepare("
