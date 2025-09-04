@@ -1003,20 +1003,32 @@ class PublicMenuController extends BaseController
         $total = $stmt->fetch()['total'];
         $totalPages = ceil($total / $limit);
 
-        // Get orders
+        // Get order IDs first
         $stmt = $this->db->getPdo()->prepare("
-            SELECT o.*, pm.name as payment_method_name,
-                   COUNT(oi.id) as items_count
-            FROM orders o
-            LEFT JOIN payment_methods pm ON o.payment_method_id = pm.id
-            LEFT JOIN order_items oi ON o.id = oi.order_id
-            WHERE o.establishment_id = ? AND o.customer_phone = ?
-            GROUP BY o.id
-            ORDER BY o.created_at DESC
-            LIMIT ? OFFSET ?
+            SELECT id FROM orders 
+            WHERE establishment_id = ? AND customer_phone = ?
+            ORDER BY created_at DESC
+            LIMIT {$limit} OFFSET {$offset}
         ");
-        $stmt->execute([$establishment['id'], $userPhone, $limit, $offset]);
-        $orders = $stmt->fetchAll();
+        $stmt->execute([$establishment['id'], $userPhone]);
+        $orderIds = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        
+        $orders = [];
+        if (!empty($orderIds)) {
+            $placeholders = str_repeat('?,', count($orderIds) - 1) . '?';
+            $stmt = $this->db->getPdo()->prepare("
+                SELECT o.*, pm.name as payment_method_name,
+                       COUNT(oi.id) as items_count
+                FROM orders o
+                LEFT JOIN payment_methods pm ON o.payment_method_id = pm.id
+                LEFT JOIN order_items oi ON o.id = oi.order_id
+                WHERE o.id IN ({$placeholders})
+                GROUP BY o.id
+                ORDER BY o.created_at DESC
+            ");
+            $stmt->execute($orderIds);
+            $orders = $stmt->fetchAll();
+        }
 
         // Get order items for each order
         foreach ($orders as &$order) {
