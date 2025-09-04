@@ -1,0 +1,50 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Database
+/database/*.sqlite
+/database/*.db
+
+# Storage (keep structure, ignore uploaded files)
+/storage/*/
+!/storage/*/.gitkeep
+
+# CSS compiled
+/public/css/output.css
+
+/public/uploads/*
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/logs/
+
+# Cache
+/cache/
+/tmp/
+
+# Composer
+composer.lock
+
+# NPM
+package-lock.json
+
+# Backup files
+*.bak
+*.backup
+

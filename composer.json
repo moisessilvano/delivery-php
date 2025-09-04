@@ -1,0 +1,28 @@
+{
+    "name": "comida-sm/platform",
+    "description": "Plataforma similar ao Appzei para gestão de cardápios e pedidos",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-pdo_pgsql": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-curl": "*",
+        "ext-zip": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "serve": "php -S localhost:8000 -t public",
+        "dev": "php server.php",
+        "start": "php server.php",
+        "migrate": "php migrate_to_postgresql.php",
+        "backup": "php backup_database.php"
+    }
+}
+

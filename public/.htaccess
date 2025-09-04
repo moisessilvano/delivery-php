@@ -1,0 +1,13 @@
+# Comida SM - Public Directory .htaccess
+# Serve static files directly
+
+RewriteEngine On
+
+# Serve static files
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(.*)$ - [L]
+
+# Redirect everything else to main index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ ../index.php [QSA,L]

@@ -1,0 +1,93 @@
+{
+  "name": "Comida SM - Delivery",
+  "short_name": "Comida SM",
+  "description": "Aplicativo de delivery para fazer pedidos online",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#3B82F6",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver Cardápio",
+      "short_name": "Cardápio",
+      "description": "Acesse nosso cardápio completo",
+      "url": "/",
+      "icons": [{"src": "/icons/shortcut-menu.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "Meus Pedidos",
+      "short_name": "Pedidos",
+      "description": "Veja seus pedidos anteriores",
+      "url": "/orders-list",
+      "icons": [{"src": "/icons/shortcut-orders.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "Perfil",
+      "short_name": "Perfil",
+      "description": "Edite suas informações",
+      "url": "/profile",
+      "icons": [{"src": "/icons/shortcut-profile.png", "sizes": "96x96"}]
+    }
+  ],
+  "categories": ["food", "business"],
+  "screenshots": [
+    {
+      "src": "/screenshots/menu-mobile.png",
+      "sizes": "640x1136",
+      "type": "image/png"
+    }
+  ]
+}

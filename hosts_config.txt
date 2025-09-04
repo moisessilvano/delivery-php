@@ -1,0 +1,16 @@
+# Configuração do arquivo hosts para teste local
+# Adicione esta linha ao arquivo C:\Windows\System32\drivers\etc\hosts
+
+127.0.0.1 teste.localhost
+
+# Para adicionar mais subdomínios de teste, use:
+# 127.0.0.1 meurestaurante.localhost
+# 127.0.0.1 lanchonete.localhost
+# 127.0.0.1 pizzaria.localhost
+
+# Instruções:
+# 1. Abra o Bloco de Notas como Administrador
+# 2. Abra o arquivo C:\Windows\System32\drivers\etc\hosts
+# 3. Adicione a linha: 127.0.0.1 teste.localhost
+# 4. Salve o arquivo
+# 5. Reinicie o navegador
