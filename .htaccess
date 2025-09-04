@@ -24,8 +24,9 @@ RewriteRule ^audio/(.*)$ public/audio/$1 [L]
 RewriteCond %{REQUEST_URI} ^/icons/
 RewriteRule ^icons/(.*)$ public/icons/$1 [L]
 
-# Handle specific subdomains only (teste, demo, cardapio)
-RewriteCond %{HTTP_HOST} ^(teste|demo|cardapio)\.appzei\.com$
+# Handle any subdomain (except www and main domain)
+RewriteCond %{HTTP_HOST} ^([^.]+)\.appzei\.com$
+RewriteCond %1 !^www$
 RewriteRule ^(.*)$ index.php?subdomain=%1&path=%{REQUEST_URI} [QSA,L]
 
 # Handle www subdomain as main domain (no subdomain)
