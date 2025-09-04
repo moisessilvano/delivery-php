@@ -533,7 +533,7 @@
                     input.type = (group.max_selections > 1) ? 'checkbox' : 'radio';
                     input.name = `group_${group.id}`;
                     input.value = option.id;
-                    input.dataset.price = option.price;
+                    input.dataset.price = parseFloat(option.price || 0);
                     input.className = 'sr-only'; // Hide the actual input
                     input.addEventListener('change', updateModalTotalPrice);
                     
@@ -619,7 +619,7 @@
         function updateModalTotalPrice() {
             if (!currentProduct) return;
             
-            let totalPrice = currentProduct.price;
+            let totalPrice = parseFloat(currentProduct.price || 0);
             
             // Add selected options prices
             const selectedInputs = document.querySelectorAll('#modal-customizations input:checked');
