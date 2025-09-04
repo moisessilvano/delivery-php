@@ -9,12 +9,14 @@ define('APP_ROOT', dirname(__DIR__));
 define('PUBLIC_ROOT', __DIR__);
 define('STORAGE_ROOT', APP_ROOT . '/storage');
 
-// Load Composer autoloader
-require_once APP_ROOT . '/vendor/autoload.php';
-
-use App\Core\Router;
-use App\Core\Database;
-use App\Core\Config;
+// Load autoloader (works with or without Composer)
+if (file_exists(APP_ROOT . '/vendor/autoload.php')) {
+    // Use Composer autoloader if available
+    require_once APP_ROOT . '/vendor/autoload.php';
+} else {
+    // Use simple autoloader for production
+    require_once APP_ROOT . '/autoload.php';
+}
 
 // Error reporting based on environment
 $config = new Config();
