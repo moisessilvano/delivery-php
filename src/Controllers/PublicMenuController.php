@@ -829,8 +829,8 @@ class PublicMenuController extends BaseController
                 $fullAddress = 'Retirada no Local';
             }
 
-            // Generate daily order number
-            $orderNumber = $this->generateDailyOrderNumber($establishment['id']);
+            // Generate daily order number (without transaction since we're already in one)
+            $orderNumber = $this->generateDailyOrderNumberWithoutTransaction($establishment['id']);
 
             // Create order
             $stmt = $this->db->getPdo()->prepare("
@@ -880,7 +880,10 @@ class PublicMenuController extends BaseController
             echo json_encode(['success' => true, 'order_id' => $orderNumber]);
 
         } catch (\Exception $e) {
-            $this->db->getPdo()->rollback();
+            // Only rollback if there's an active transaction
+            if ($this->db->getPdo()->inTransaction()) {
+                $this->db->getPdo()->rollback();
+            }
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);
         }
@@ -935,6 +938,28 @@ class PublicMenuController extends BaseController
             'order' => $order,
             'order_items' => $orderItems
         ]);
+    }
+
+    private function generateDailyOrderNumberWithoutTransaction(int $establishmentId): string
+    {
+        $today = date('Y-m-d');
+        
+        // Get the last order number for today
+        $stmt = $this->db->getPdo()->prepare("
+            SELECT public_id FROM orders 
+            WHERE establishment_id = ? AND DATE(created_at) = ? 
+            ORDER BY id DESC LIMIT 1
+        ");
+        $stmt->execute([$establishmentId, $today]);
+        $lastOrder = $stmt->fetch();
+        
+        if ($lastOrder && is_numeric($lastOrder['public_id'])) {
+            $nextNumber = (int)$lastOrder['public_id'] + 1;
+        } else {
+            $nextNumber = 1;
+        }
+        
+        return (string)$nextNumber;
     }
 
     private function generateDailyOrderNumber(int $establishmentId): string
@@ -994,7 +1019,10 @@ class PublicMenuController extends BaseController
                 return (string)$nextNumber;
                 
             } catch (\Exception $e) {
-                $this->db->getPdo()->rollBack();
+                // Only rollback if there's an active transaction
+                if ($this->db->getPdo()->inTransaction()) {
+                    $this->db->getPdo()->rollBack();
+                }
                 $retryCount++;
                 usleep(100000); // Wait 100ms before retry
                 error_log("Error generating order number (attempt {$retryCount}): " . $e->getMessage());

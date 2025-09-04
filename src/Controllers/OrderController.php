@@ -158,8 +158,8 @@ class OrderController extends BaseController
                 $totalAmount += (float)$item['price'] * (int)$item['quantity'];
             }
 
-            // Generate daily order number
-            $publicId = $this->generateDailyOrderNumber($establishmentId);
+            // Generate daily order number (without transaction since we're already in one)
+            $publicId = $this->generateDailyOrderNumberWithoutTransaction($establishmentId);
 
             // Create order
             $stmt = $this->db->getPdo()->prepare("
@@ -189,7 +189,10 @@ class OrderController extends BaseController
             $this->redirect("/orders/{$orderId}?success=Pedido criado com sucesso");
 
         } catch (\Exception $e) {
-            $this->db->getPdo()->rollBack();
+            // Only rollback if there's an active transaction
+            if ($this->db->getPdo()->inTransaction()) {
+                $this->db->getPdo()->rollBack();
+            }
             $this->view('orders/create', [
                 'categories' => $this->getCategoriesWithProducts($establishmentId),
                 'establishment' => $this->getCurrentEstablishment(),
@@ -494,6 +497,28 @@ class OrderController extends BaseController
         }
     }
 
+    private function generateDailyOrderNumberWithoutTransaction(int $establishmentId): string
+    {
+        $today = date('Y-m-d');
+        
+        // Get the last order number for today
+        $stmt = $this->db->getPdo()->prepare("
+            SELECT public_id FROM orders 
+            WHERE establishment_id = ? AND DATE(created_at) = ? 
+            ORDER BY id DESC LIMIT 1
+        ");
+        $stmt->execute([$establishmentId, $today]);
+        $lastOrder = $stmt->fetch();
+        
+        if ($lastOrder && is_numeric($lastOrder['public_id'])) {
+            $nextNumber = (int)$lastOrder['public_id'] + 1;
+        } else {
+            $nextNumber = 1;
+        }
+        
+        return (string)$nextNumber;
+    }
+
     private function generateDailyOrderNumber(int $establishmentId): string
     {
         $today = date('Y-m-d');
@@ -551,7 +576,10 @@ class OrderController extends BaseController
                 return (string)$nextNumber;
                 
             } catch (\Exception $e) {
-                $this->db->getPdo()->rollBack();
+                // Only rollback if there's an active transaction
+                if ($this->db->getPdo()->inTransaction()) {
+                    $this->db->getPdo()->rollBack();
+                }
                 $retryCount++;
                 usleep(100000); // Wait 100ms before retry
                 error_log("Error generating order number (attempt {$retryCount}): " . $e->getMessage());
