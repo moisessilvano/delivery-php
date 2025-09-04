@@ -476,7 +476,7 @@
                 // Populate modal
                 document.getElementById('modal-product-name').textContent = product.name;
                 document.getElementById('modal-product-description').textContent = product.description || '';
-                document.getElementById('modal-product-price').textContent = `A partir de R$ ${product.price.toFixed(2).replace('.', ',')}`;
+                document.getElementById('modal-product-price').textContent = `A partir de R$ ${parseFloat(product.price || 0).toFixed(2).replace('.', ',')}`;
                 document.getElementById('modal-quantity').textContent = modalQuantity;
                 
                 // Handle product image
@@ -568,7 +568,7 @@
                     const textDiv = document.createElement('div');
                     textDiv.innerHTML = `
                         <div class="font-medium">${option.name}</div>
-                        ${option.price > 0 ? `<div class="text-sm text-gray-600">+R$ ${option.price.toFixed(2).replace('.', ',')}</div>` : ''}
+                        ${parseFloat(option.price || 0) > 0 ? `<div class="text-sm text-gray-600">+R$ ${parseFloat(option.price || 0).toFixed(2).replace('.', ',')}</div>` : ''}
                     `;
                     contentDiv.appendChild(textDiv);
                     
@@ -577,10 +577,10 @@
                     optionDiv.appendChild(input);
                     optionDiv.appendChild(leftSide);
                     
-                    if (option.price > 0) {
+                    if (parseFloat(option.price || 0) > 0) {
                         const priceSpan = document.createElement('span');
                         priceSpan.className = 'text-primary-600 font-medium';
-                        priceSpan.textContent = `+R$ ${option.price.toFixed(2).replace('.', ',')}`;
+                        priceSpan.textContent = `+R$ ${parseFloat(option.price || 0).toFixed(2).replace('.', ',')}`;
                         optionDiv.appendChild(priceSpan);
                     }
                     
@@ -831,10 +831,10 @@
                         <div class="font-medium">${item.name}</div>
                         ${item.options && item.options.length > 0 ? `
                             <div class="text-xs text-gray-500 mt-1">
-                                ${item.options.map(opt => opt.name + (opt.price > 0 ? ` (+R$ ${opt.price.toFixed(2).replace('.', ',')})` : '')).join(', ')}
+                                ${item.options.map(opt => opt.name + (parseFloat(opt.price || 0) > 0 ? ` (+R$ ${parseFloat(opt.price || 0).toFixed(2).replace('.', ',')})` : '')).join(', ')}
                             </div>
                         ` : ''}
-                        <div class="text-sm text-gray-600">${item.quantity}x R$ ${item.price.toFixed(2).replace('.', ',')}</div>
+                        <div class="text-sm text-gray-600">${item.quantity}x R$ ${parseFloat(item.price || 0).toFixed(2).replace('.', ',')}</div>
                     </div>
                     <div class="font-bold">R$ ${total.toFixed(2).replace('.', ',')}</div>
                 `;
